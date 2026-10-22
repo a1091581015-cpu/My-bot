@@ -1,23 +1,21 @@
 import os
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
+# التوكن - حطه هنا او في Render كـ Environment Variable
+TOKEN = os.getenv("BOT_TOKEN") or "PUT_YOUR_TOKEN_HERE"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("هلا ابو سهم ✅ البوت شغال")
+    await update.message.reply_text("أهلا! البوت شغال الآن ✅\nأرسل /start")
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"وصلت رسالتك: {update.message.text}")
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("كيف أقدر أساعدك؟")
 
 def main():
-    if not BOT_TOKEN:
-        print("ERROR: BOT_TOKEN missing")
-        return
-    app = Application.builder().token(BOT_TOKEN).build()
+    app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    print("Bot started")
+    app.add_handler(CommandHandler("help", help_command))
+    print("Bot started...")
     app.run_polling()
 
 if __name__ == "__main__":
